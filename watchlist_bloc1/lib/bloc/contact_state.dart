@@ -12,6 +12,16 @@ class ContactsLoaded extends ContactState {
   ContactsLoaded(this.users);
 }
 
+class FilterdState extends ContactState {
+  final List<List<UserModel>> filteredusers;
+  final int currentTabIndex;
+  final String? selectedSort;
+  FilterdState(
+      {required this.filteredusers,
+      required this.currentTabIndex,
+      this.selectedSort});
+}
+
 class ContactsError extends ContactState {
   final String errorMessage;
 

@@ -15,19 +15,20 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: RepositoryProvider(
-        create: (context) => UserRepository(),
-        child: BlocProvider(
-          create: (context) => ContactBloc(
-            RepositoryProvider.of<UserRepository>(context),
-          )..add(FetchContacts()),
-          child: const ContactScreen(),
+    return RepositoryProvider(
+      create: (context) => UserRepository(),
+      child: BlocProvider(
+        create: (context) => ContactBloc(
+          RepositoryProvider.of<UserRepository>(context),
+        )..add(FetchContacts()),
+        child: MaterialApp(
+          title: 'Flutter Demo',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+            useMaterial3: true,
+          ),
+          home: const ContactScreen(),
         ),
       ),
     );

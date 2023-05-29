@@ -17,10 +17,6 @@ class _ContactScreenState extends State<ContactScreen>
   late TabController _tabController;
 
   String? isSelected;
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   void dispose() {
@@ -31,83 +27,91 @@ class _ContactScreenState extends State<ContactScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocConsumer<ContactBloc, ContactState>(
-        listener: (context, state) {
-          if (state is ContactsLoaded) {
-            allList = state.users;
-            _tabController =
-                TabController(length: state.users.length, vsync: this);
-          }
-        },
-        builder: (context, state) {
-          if (state is ContactsLoading) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
+      body: SafeArea(
+        child: BlocConsumer<ContactBloc, ContactState>(
+          listener: (context, state) {
+            if (state is ContactsLoaded) {
+              allList = state.users;
+              _tabController =
+                  TabController(length: state.users.length, vsync: this);
+            }
+          },
+          builder: (context, state) {
+            if (state is ContactsLoading) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
 
-          if (state is FilterdState) {
-            final tabs = state.filteredusers;
-            return Column(
-              children: [
-                Container(
-                  decoration: const BoxDecoration(color: Colors.blue),
-                  padding: const EdgeInsets.only(left: 10, right: 10),
-                  child: Column(
-                    children: [
-                      const SizedBox(
-                        height: 100,
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.person_2,
-                              size: 30,
-                            ),
-                            SizedBox(width: 10),
-                            Text(
-                              'Contacts List',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 25,
+            if (state is FilterdState) {
+              final tabs = state.filteredusers;
+              return Column(
+                children: [
+                  Container(
+                    decoration: const BoxDecoration(color: Colors.blue),
+                    padding: const EdgeInsets.only(
+                      left: 10,
+                      right: 10,
+                    ),
+                    child: Column(
+                      children: [
+                        const SizedBox(
+                          height: 70,
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.person_2,
+                                size: 30,
                               ),
-                            ),
-                          ],
+                              SizedBox(width: 10),
+                              Text(
+                                'Contacts List',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 25,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      TabBar(
-                        onTap: (tabIndex) {
-                          isSelected = '';
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        TabBar(
+                          onTap: (tabIndex) {
+                            isSelected = '';
 
-                          context.read<ContactBloc>().add(OnSortEvent(
-                              filteredusers: allList,
-                              currentTabIndex: tabIndex,
-                              selectedSort: 'asc'));
-                        },
-                        controller: _tabController,
-                        isScrollable: true,
-                        tabs: _buildTabBarTabs(tabs),
-                      ),
-                    ],
+                            context.read<ContactBloc>().add(OnSortEvent(
+                                filteredusers: allList,
+                                currentTabIndex: tabIndex,
+                                selectedSort: 'asc'));
+                          },
+                          controller: _tabController,
+                          isScrollable: true,
+                          tabs: _buildTabBarTabs(tabs),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: TabBarView(
-                    controller: _tabController,
-                    children: _buildTabBarViews(tabs, context),
+                  Expanded(
+                    child: TabBarView(
+                      controller: _tabController,
+                      children: _buildTabBarViews(tabs, context),
+                    ),
                   ),
-                ),
-              ],
-            );
-          }
+                ],
+              );
+            }
 
-          if (state is ContactsError) {
-            return const Center(
-              child: Text('Something Went Wrong!'),
-            );
-          }
+            if (state is ContactsError) {
+              return const Center(
+                child: Text('Something Went Wrong!'),
+              );
+            }
 
-          return Container();
-        },
+            return Container();
+          },
+        ),
       ),
     );
   }
@@ -131,6 +135,7 @@ class _ContactScreenState extends State<ContactScreen>
           Container(
             decoration: BoxDecoration(color: Colors.grey.shade200),
             child: ListView.builder(
+              padding: const EdgeInsets.all(20),
               itemCount: tabItems.length,
               itemBuilder: (context, index) {
                 final item = tabItems[index];
